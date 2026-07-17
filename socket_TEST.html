@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+
+<body>
+
+    <h2>Socket.IO Test</h2>
+
+    <p id="status">Connecting...</p>
+
+    <pre id="data"></pre>
+
+    <script>
+
+        const socket = io("http://localhost:5000");
+
+        socket.on("connect", () => {
+            document.getElementById("status").innerHTML =
+                "Connected : " + socket.id;
+
+            console.log("Connected");
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected");
+        });
+
+        socket.on("telemetry:new", (payload) => {
+
+            console.log(payload);
+
+            document.getElementById("data").innerHTML =
+                JSON.stringify(payload, null, 4);
+
+        });
+
+    </script>
+
+</body>
+
+</html>

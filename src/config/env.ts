@@ -1,0 +1,64 @@
+/* eslint-disable no-console */
+import dotenv from 'dotenv';
+import { z } from 'zod';
+
+// Load environment variables from .env file
+dotenv.config();
+
+const envSchema = z.object({
+  PORT: z
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .default('5000'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+
+  // MQTT Settings
+  MQTT_HOST: z.string().min(1, 'MQTT_HOST is required'),
+  MQTT_PORT: z
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .default('1883'),
+  MQTT_USERNAME: z.string().optional(),
+  MQTT_PASSWORD: z.string().optional(),
+  MQTT_CLIENT_ID: z.string().default('solar_backend'),
+
+  // Firebase Settings
+  FIREBASE_PROJECT_ID: z.string().min(1, 'FIREBASE_PROJECT_ID is required'),
+  FIREBASE_CLIENT_EMAIL: z.string().email('FIREBASE_CLIENT_EMAIL must be a valid email'),
+  FIREBASE_PRIVATE_KEY: z
+    .string()
+    .min(1, 'FIREBASE_PRIVATE_KEY is required')
+    .transform((val) => {
+      // Replace double escaped newlines (e.g. from JSON key or .env) with actual newlines
+      return val.replace(/\\n/g, '\n');
+    }),
+
+  // JWT Settings
+  JWT_SECRET: z.string().min(8, 'JWT_SECRET must be at least 8 characters long'),
+
+  // Simulator Settings
+  ENABLE_SIMULATOR: z
+    .string()
+    .transform((val) => val === 'true')
+    .default('false'),
+});
+
+type EnvConfig = z.infer<typeof envSchema>;
+
+let env: EnvConfig;
+
+try {
+  env = envSchema.parse(process.env);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    const missingOrInvalid = error.errors
+      .map((err) => `${err.path.join('.')}: ${err.message}`)
+      .join('\n');
+    console.error('❌ Environment validation failed:\n', missingOrInvalid);
+  } else {
+    console.error('❌ Unknown error during environment validation:', error);
+  }
+  process.exit(1);
+}
+
+export { env };
