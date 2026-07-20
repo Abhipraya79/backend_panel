@@ -33,23 +33,20 @@ export class ControlService {
     };
 
     // 1. Publish to MQTT — must succeed before continuing
-    logger.info(`[CONTROL] MQTT publish started\n\nTopic: ${CONTROL_TOPIC}\n\nPayload:\n${JSON.stringify(mqttPayload, null, 2)}`);
+    logger.info(
+      `[CONTROL] MQTT publish started\n\nTopic: ${CONTROL_TOPIC}\n\nPayload:\n${JSON.stringify(mqttPayload, null, 2)}`,
+    );
 
     await new Promise<void>((resolve, reject) => {
-      mqttClient.publish(
-        CONTROL_TOPIC,
-        JSON.stringify(mqttPayload),
-        { qos: 1 },
-        (err) => {
-          if (err) {
-            logger.error(`[CONTROL] MQTT publish failed\n\nReason:\n${err.message}`, { err });
-            reject(err);
-          } else {
-            logger.info(`[CONTROL] MQTT publish success\n\nTopic: ${CONTROL_TOPIC}`);
-            resolve();
-          }
-        },
-      );
+      mqttClient.publish(CONTROL_TOPIC, JSON.stringify(mqttPayload), { qos: 1 }, (err) => {
+        if (err) {
+          logger.error(`[CONTROL] MQTT publish failed\n\nReason:\n${err.message}`, { err });
+          reject(err);
+        } else {
+          logger.info(`[CONTROL] MQTT publish success\n\nTopic: ${CONTROL_TOPIC}`);
+          resolve();
+        }
+      });
     });
 
     // 2. Save to Firestore
@@ -75,9 +72,13 @@ export class ControlService {
       });
 
       const clientCount = io.sockets.sockets.size;
-      logger.info(`[CONTROL] Socket emit success\n\nEvent: ${SOCKET_EVENTS.CONTROL_NEW}\n\nSocket Clients\n${clientCount}`);
+      logger.info(
+        `[CONTROL] Socket emit success\n\nEvent: ${SOCKET_EVENTS.CONTROL_NEW}\n\nSocket Clients\n${clientCount}`,
+      );
     } catch (socketError: any) {
-      logger.error(`[CONTROL] Failed to emit socket event\n\nReason:\n${socketError.message || socketError}`);
+      logger.error(
+        `[CONTROL] Failed to emit socket event\n\nReason:\n${socketError.message || socketError}`,
+      );
     }
 
     return {

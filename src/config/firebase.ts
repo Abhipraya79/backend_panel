@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import path from 'path';
+import { env } from './env';
 import logger from '../utils/logger';
 
 let db: admin.firestore.Firestore;
@@ -8,10 +8,13 @@ let messaging: admin.messaging.Messaging;
 
 try {
   logger.info('Initializing Firebase Admin SDK...');
-  const serviceAccountPath = path.join(process.cwd(), 'credentials', 'firebase-admin.json');
 
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountPath),
+    credential: admin.credential.cert({
+      projectId: env.FIREBASE_PROJECT_ID,
+      clientEmail: env.FIREBASE_CLIENT_EMAIL,
+      privateKey: env.FIREBASE_PRIVATE_KEY,
+    }),
   });
 
   db = admin.firestore();

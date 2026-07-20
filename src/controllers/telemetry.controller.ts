@@ -171,7 +171,9 @@ export const controlCleaning = async (
         command: isStarting ? 'WIPER_ON' : 'WIPER_OFF',
       });
 
-      logger.info(`[MQTT] Successfully published cleaning control commands to topic: solar/panel/control`);
+      logger.info(
+        `[MQTT] Successfully published cleaning control commands to topic: solar/panel/control`,
+      );
     } catch (mqttError: any) {
       logger.error(`[MQTT] Failed to publish control commands: ${mqttError.message}`);
     }
@@ -279,7 +281,9 @@ export const controlMode = async (
         });
       }
 
-      logger.info(`[MQTT] Successfully published mode control commands to topic: solar/panel/control`);
+      logger.info(
+        `[MQTT] Successfully published mode control commands to topic: solar/panel/control`,
+      );
     } catch (mqttError: any) {
       logger.error(`[MQTT] Failed to publish mode commands: ${mqttError.message}`);
     }
@@ -301,5 +305,3 @@ export const controlMode = async (
     });
   }
 };
-
-

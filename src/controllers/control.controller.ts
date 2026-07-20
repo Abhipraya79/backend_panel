@@ -9,7 +9,9 @@ export const postCleaningCommand = async (
   _next: NextFunction,
 ): Promise<void> => {
   try {
-    logger.info(`[CONTROL] Control request received\n\nBody:\n${JSON.stringify(req.body, null, 2)}`);
+    logger.info(
+      `[CONTROL] Control request received\n\nBody:\n${JSON.stringify(req.body, null, 2)}`,
+    );
 
     const parsed = cleaningCommandSchema.safeParse(req.body);
 
@@ -23,7 +25,9 @@ export const postCleaningCommand = async (
     }
 
     const result = await ControlService.publishCleaningCommand(parsed.data);
-    logger.info(`[CONTROL] HTTP response sent\n\nStatus: 200\n\nPayload:\n${JSON.stringify(result, null, 2)}`);
+    logger.info(
+      `[CONTROL] HTTP response sent\n\nStatus: 200\n\nPayload:\n${JSON.stringify(result, null, 2)}`,
+    );
 
     res.status(200).json({
       success: true,
