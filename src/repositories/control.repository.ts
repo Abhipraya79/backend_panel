@@ -4,9 +4,12 @@ import logger from '../utils/logger';
 export interface ControlLogData {
   deviceId: string;
   action: string;
-  mode: string;
-  pump: boolean;
-  wiper: boolean;
+  feature?: string;
+  mode?: string;
+  pump?: boolean;
+  wiper?: boolean;
+  peltier?: boolean;
+  fan?: boolean;
   topic: string;
   status: string;
   source: string;
